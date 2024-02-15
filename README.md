@@ -5,6 +5,10 @@
 
 ## Augment
 
+```bash
+pip install git+https://github.com/oh-gnues-iohc/korean-noise-augmentation.git
+```
+
 ```python
 from korean_noise_augmentation import augment
 
