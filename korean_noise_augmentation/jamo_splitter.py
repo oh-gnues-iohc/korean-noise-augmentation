@@ -58,7 +58,8 @@ def join(jamo: list):
                 if "".join(jong) in inverted_double_jong:
                     jong = inverted_double_jong["".join(jong)]
                 else: jong = "".join(jong)
-            return f"{chr(first_c + ord('가'))}{jung[1]}{jong}"
+
+            return f"{chr(first_c + ord('가'))}{jung[1]}{jong}".replace(" ", "")
 
     if isinstance(jong, list):
         if "".join(jong) in inverted_double_jong:
@@ -66,7 +67,7 @@ def join(jamo: list):
         else:
             first_jung_num = _jung.index(jung)
             first_c = cho_num * len_jung * len_jong + first_jung_num * len_jong + _jong.index(jong[0])
-            return f"{chr(first_c + ord('가'))}{jong[1]}"
+            return f"{chr(first_c + ord('가'))}{jong[1]}".replace(" ", "")
     jung_num = _jung.index(jung)
     jong_num = _jong.index(jong)
 
