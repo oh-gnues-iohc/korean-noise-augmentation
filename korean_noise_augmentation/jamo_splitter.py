@@ -20,7 +20,7 @@ def split(char, use_double_jung: bool=False, use_double_jong: bool=False):
     if char == " ": []
 
     c_number = ord(char) - ord("가")
-    if c_number < 0 : return []
+    if c_number < 0 : return [char]
 
     len_jung, len_jong = len(_jung), len(_jong)
     jong_num = c_number % len_jong
@@ -40,38 +40,52 @@ def split(char, use_double_jung: bool=False, use_double_jong: bool=False):
     return [cho, jung, jong]
 
 
-def join(jamo: list):
-    if not jamo: return " "
+def join(jamo: list) -> str:
+    if not jamo:
+        return " "
+
+    if len(jamo) < 2:
+        return "".join(jamo)
 
     cho, jung, jong = jamo
+    cho_idx = _cho.index(cho)
 
-    cho_num = _cho.index(cho)
-    len_jung, len_jong = len(_jung), len(_jong)
+    c = ""
+    second_jung = ""
+    second_jong = ""
+
 
     if isinstance(jung, list):
-        if "".join(jung) in inverted_double_jung:
-            jung = inverted_double_jung["".join(jung)]
-        else:
-            first_jung_num = _jung.index(jung[0])
-            first_c = cho_num * len_jung * len_jong + first_jung_num * len_jong
-            if isinstance(jong, list):
-                if "".join(jong) in inverted_double_jong:
-                    jong = inverted_double_jong["".join(jong)]
-                else: jong = "".join(jong)
+        jung, second_jung = _get_single_jung_from_double(jung)
 
-            return f"{chr(first_c + ord('가'))}{jung[1]}{jong}".replace(" ", "")
+        if second_jung:
+            c = _get_character(cho_idx, jung, " ") + second_jung
 
     if isinstance(jong, list):
-        if "".join(jong) in inverted_double_jong:
-            jong = inverted_double_jong["".join(jong)]
-        else:
-            first_jung_num = _jung.index(jung)
-            first_c = cho_num * len_jung * len_jong + first_jung_num * len_jong + _jong.index(jong[0])
-            return f"{chr(first_c + ord('가'))}{jong[1]}".replace(" ", "")
-    jung_num = _jung.index(jung)
-    jong_num = _jong.index(jong)
+        jong, second_jong = _get_single_jong_and_second_jong(jong)
 
-    c_number = cho_num * len_jung * len_jong + jung_num * len_jong + jong_num
-    c = chr(c_number + ord("가"))
+        if c:
+            c = c + jong
 
-    return c
+    if not c:
+        c = _get_character(cho_idx, jung, jong)
+
+    return c + second_jong.replace(" ", "")
+
+def _get_single_jung_from_double(double_jung: list) -> str:
+    single_jung = inverted_double_jung["".join(double_jung)] if "".join(double_jung) in inverted_double_jung else double_jung[0]
+    second_jung = "" if single_jung in _double_jung else double_jung[1]
+    return single_jung, second_jung
+
+def _get_single_jong_and_second_jong(double_jong: list) -> tuple:
+    single_jong = inverted_double_jong["".join(double_jong)] if "".join(double_jong) in inverted_double_jong else double_jong[0]
+    second_jong = "" if single_jong in _double_jong else double_jong[1]
+    return single_jong, second_jong
+
+def _get_character(cho_idx: int, jung: str, jong: str) -> str:
+    len_jung, len_jong = len(_jung), len(_jong)
+
+    jung_idx = _jung.index(jung)
+    jong_idx = _jong.index(jong)
+    c_number = cho_idx * len_jung * len_jong + jung_idx * len_jong + jong_idx
+    return chr(c_number + ord("가"))
