@@ -13,7 +13,7 @@ pip install git+https://github.com/oh-gnues-iohc/korean-noise-augmentation.git
 from korean_noise_augmentation import augment
 
 augment("안녕하세요 저는 최승호에요", prob=.1, sample=3, use_double_jung=True)
-# ['간녕하세요 저는 최승호에요', '앋녕하세요 조는 최승호에요', '언녕하세요 저는 쵸ㅏ 승호에요']
+# ['간녕하세요 저는 최승호에요', '앋녕하세요 조는 최승호에요', '언녕하세요 저는 쵸ㅏ승호에요']
 ```
 
 ```python
